@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 
 // TODO: Replace this endpoint with your REST API endpoint
-const LEAD_API = 'http://localhost:8000/leads';
+const LEAD_API = 'http://localhost:8000/api/v1/contacts/';
 
 export const LeadWidget = function (props) {
 
   const [email, setEmail] = useState('');
   let buttonStyles = {};
-  if(email === '') {
+  if (email === '') {
     buttonStyles = {
       ...styles.button,
       ...styles.buttonDisabled
@@ -30,38 +30,38 @@ export const LeadWidget = function (props) {
         email: email
       })
     }).then(
-        resp => resp.json()
+      resp => resp.json()
     ).then(
-        (data) => {
-          console.log(data);
-        },
-        (error) => {
-          console.log(error);
-        }
+      (data) => {
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+      }
     )
   }
 
   return (
-      <div style={styles.container}>
-        <div style={styles.title}>Signup Now</div>
-        <div style={styles.subtitle}>Signup to get 5$ coupon on your first purchase!</div>
-        <div style={styles.form}>
-          <input
-              value={email} placeholder={'Enter your email address to receive coupon'}
-              onChange={(event) => setEmail(event.target.value)}
-              style={styles.input}
-          />
-        </div>
-        <div style={styles.buttonContainer}>
-          <button
-              style={buttonStyles}
-              onClick={saveLead}
-              disabled={email === ''}
-          >Submit
-
-          </button>
-        </div>
+    <div style={styles.container}>
+      <div style={styles.title}>Signup Now</div>
+      <div style={styles.subtitle}>Signup to get 5$ coupon on your first purchase!</div>
+      <div style={styles.form}>
+        <input
+          value={email} placeholder={'Enter your email address to receive coupon'}
+          onChange={(event) => setEmail(event.target.value)}
+          style={styles.input}
+        />
       </div>
+      <div style={styles.buttonContainer}>
+        <button
+          style={buttonStyles}
+          onClick={saveLead}
+          disabled={email === ''}
+        >Submit
+
+        </button>
+      </div>
+    </div>
   )
 }
 

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import environ
 from pathlib import Path
+from celery.schedules import crontab
+import mycelery.task
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -39,10 +41,12 @@ CSRF_COOKIE_SECURE = True
 LOCAL_APPS = [
     "unity",
     "common",
+    "mycelery",
 ]
 
 THIRD_PARTY_APPS = [
     "django_celery_beat",
+    "django_celery_results",
 ]
 
 DJANGO_APPS = [
@@ -73,7 +77,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -136,3 +140,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Celery
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "django-cache"
+CELERY_BROKER_URL = env("AMQP_URL")
+
+CELERY_BEAT_SCHEDULE = {
+    "print-every-monday-wednesday": {
+        "task": "mycelery.task.print_new_email_month",
+        "schedule": crontab(day_of_week=[1,3]),
+    },
+}

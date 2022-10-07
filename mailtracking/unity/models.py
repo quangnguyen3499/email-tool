@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Count, Q
 
 class Contact(models.Model):
     class Status(models.TextChoices):

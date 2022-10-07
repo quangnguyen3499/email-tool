@@ -69,3 +69,8 @@ class ListContactView(APIErrorsMixin, APIView):
             request=request,
             view=self,
         )
+
+class ContactInfoView(APIErrorsMixin, APIView):
+    def get(self, request):
+        new_email_this_month = Contact.new_this_month(self)
+        return Response(new_email_this_month)
