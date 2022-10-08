@@ -10,13 +10,14 @@ def get_paginated_response(
     paginator = pagination_class()
 
     page = paginator.paginate_queryset(data["queryset"], request, view=view)
-
+    
     if page is not None:
         serializer = serializer_class(page, many=True)
+
         return paginator.get_paginated_response({
             "queryset": serializer.data,
-            "new_this_month": data["new_this_month"],
-            "unsubscribed": data["unsubscribed"],
+            "new_this_month": data["statistic"]["new_email_this_month"],
+            "unsubscribed": data["statistic"]["unsubscribed"],
         })
 
     serializer = serializer_class(data, many=True)

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from django.contrib.humanize.templatetags import humanize
+from drf_spectacular.utils import extend_schema
 
 from common.api.pagination import (
     LimitOffsetPagination,
@@ -16,8 +16,11 @@ from .models import Contact
 from .selectors import (
     email_list,
     get_contact_by_email,
+    get_email_statistic,
 )
 from .services import create_contact
+
+from django.contrib.humanize.templatetags import humanize
 
 class ContactSerializer(serializers.ModelSerializer):
     email = serializers.CharField()
@@ -27,7 +30,7 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = "__all__"
-
+    
     def get_created_at(self, obj):
         return humanize.naturaltime(obj.created_at)
 
@@ -35,6 +38,7 @@ class CreateContactAPIView(APIView):
     class CreateContactRequestSerializer(serializers.Serializer):
         email = serializers.EmailField(max_length=254)
 
+    @extend_schema(request=CreateContactRequestSerializer, responses=ContactSerializer)
     def post(self, request):
         serializer = self.CreateContactRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -63,8 +67,7 @@ class ListContactView(APIErrorsMixin, APIView):
             serializer_class=ContactSerializer,
             data={
                 "queryset": contacts,
-                "new_this_month": contacts[0].new_this_month(),
-                "unsubscribed": contacts[0].ubsubscribed(),
+                "statistic": get_email_statistic(),
             },
             request=request,
             view=self,
@@ -72,5 +75,5 @@ class ListContactView(APIErrorsMixin, APIView):
 
 class ContactInfoView(APIErrorsMixin, APIView):
     def get(self, request):
-        new_email_this_month = Contact.new_this_month(self)
-        return Response(new_email_this_month)
+        response = get_email_statistic()
+        return Response(response)

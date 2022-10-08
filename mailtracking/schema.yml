@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /api/v1/contacts/:
+    post:
+      operationId: contacts_create
+      tags:
+      - contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
+  /api/v1/contacts/info/:
+    get:
+      operationId: contacts_info_retrieve
+      description: |-
+        Mixin that transforms Django and Python exceptions into rest_framework ones.
+        Without the mixin, they return 500 status code which is not desired.
+      tags:
+      - contacts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/contacts/list/:
+    get:
+      operationId: contacts_list_retrieve
+      description: |-
+        Mixin that transforms Django and Python exceptions into rest_framework ones.
+        Without the mixin, they return 500 status code which is not desired.
+      tags:
+      - contacts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+      required:
+      - created_at
+      - email
+      - id
+      - status
+    CreateContactRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - email
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+- name: api
+  description: API Schema

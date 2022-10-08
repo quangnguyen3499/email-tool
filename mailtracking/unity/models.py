@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 class Contact(models.Model):
     class Status(models.TextChoices):
@@ -11,11 +10,3 @@ class Contact(models.Model):
         max_length=255, choices=Status.choices, default=Status.SUBSCRIBE, db_index=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    def new_this_month(self):
-        emails = Contact.objects.filter(created_at__month=timezone.now().month).count()
-        return emails
-
-    def ubsubscribed(self):
-        emails = Contact.objects.filter(status=self.Status.UNSUBSCRIBE).count()
-        return emails

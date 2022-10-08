@@ -48,6 +48,7 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     "django_celery_beat",
     "django_celery_results",
+    "drf_spectacular",
 ]
 
 DJANGO_APPS = [
@@ -64,6 +65,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -73,6 +75,31 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
+
+REST_FRAMEWORK = { 
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 25,
+    "EXCEPTION_HANDLER": "common.api.errors.exception_errors_format_handler",
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_RENDERER_CLASSES": [
+        "common.api.renderers.JSONResponseRenderer",
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    # custom setting for spectacular
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "AUTHENTICATION_CLASSES": "drf_spectacular.authentication.TokenScheme",
+    "TAGS": [
+        {"name": "api", "description": "API Schema"},
+    ],
+    "SWAGGER_UI_SETTINGS": {
+        "persistAuthorization": True,
+    },
+}
 
 TEMPLATES = [
     {
@@ -88,6 +115,9 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
+            'libraries' : {
+                'staticfiles': 'django.templatetags.static', 
+            },
         },
     },
 ]
@@ -143,15 +173,23 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_BROKER_URL = env("AMQP_URL")
 
 CELERY_BEAT_SCHEDULE = {
     "print-every-monday-wednesday": {
         "task": "mycelery.task.print_new_email_month",
-        "schedule": timedelta(minutes=1),
+        "schedule": crontab(day_of_week=[1,3]),
     },
 }
 
+# Email config
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env("SMTP_HOST")
+EMAIL_HOST_PASSWORD = env("SMTP_PASSWORD")
 DOMAIN = env("DOMAIN")
+SELLER_EMAIL = env("SELLER_EMAIL")
