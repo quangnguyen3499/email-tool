@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 import os
 import environ
 from pathlib import Path
@@ -17,7 +18,7 @@ from celery.schedules import crontab
 import mycelery.task
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 environ.Env.read_env(os.path.join(BASE_DIR, "local.env"))
 
@@ -142,13 +143,15 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery
-CELERY_RESULT_BACKEND = "django-db"
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_BROKER_URL = env("AMQP_URL")
 
 CELERY_BEAT_SCHEDULE = {
     "print-every-monday-wednesday": {
         "task": "mycelery.task.print_new_email_month",
-        "schedule": crontab(day_of_week=[1,3]),
+        "schedule": timedelta(minutes=1),
     },
 }
+
+DOMAIN = env("DOMAIN")

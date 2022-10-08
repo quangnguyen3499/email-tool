@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  platform:
+    build: .
+    image: seller-tool-backend
+    command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application
+    env_file:
+      - local.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+    depends_on:
+      - postgres
+
+  worker:
+    build: .
+    image: seller-tool-platform
+    command: celery -A mycelery worker --loglevel=INFO
+    env_file:
+      - local.env
+    volumes:
+      - ./:/app
+
+  scheduler:
+    build: .
+    image: seller-tool-platform
+    command: celery -A mycelery beat --loglevel=INFO
+    depends_on:
+      - worker
+    env_file:
+      - local.env
+    volumes:
+      - ./:/app
+
+  postgres:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=kefzuyksxrgdvb
+      - POSTGRES_PASSWORD=f9c3475d10bc84a880eff981b7ef05409d27ee73a0966fe9a429a9eb7e4c9498
+      - POSTGRES_DB=dbo0kjqif1dkdc
+    volumes:
+      - pg-volume:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+
+volumes:
+  pg-volume:
