@@ -1,7 +1,34 @@
-- Login EC2:
-sudo ssh -i ~/.ssh/my-aws-c2.pem ubuntu@ec2-44-236-75-64.us-west-2.compute.amazonaws.com
-- Login ECR:
-sudo docker login -u AWS -p $(aws ecr get-login-password --region us-west-2) <id_ecr>.dkr.ecr.us-west-2.amazonaws.com
-- ECR docker:
-sudo docker tag <image_id> <id_ecr>.dkr.ecr.us-west-2.amazonaws.com
-sudo push <id_ecr>.dkr.ecr.us-west-2.amazonaws.com/<tag_image_name>
+## Candidate: Quang Nguyen
+
+Hello interviewer(s),
+
+Please follow this step for usage
+
+### Installation:
+
+- docker
+- docker-compose
+
+### How to run:
+```
+cd <project_path>/mailtracking
+create file local.env, copy content from local.env.example and modify it (including SELLER_MAIL)
+docker-compose up --build
+```
+
+3 app will be running:
+- database (postgres)
+- web (django)
+- rabbitmq (queue)
+
+### Document:
+- list contacts page: http://{DOMAIN}:8000/api/v1/contacts/list/
+- add contact api: http://{DOMAIN}:8000/api/v1/contacts/
+- download schema: http://{DOMAIN}:8000/api/schema/
+- swagger doc: http://{DOMAIN}:8000/api/schema/swagger-ui/
+- cron job console in terminal and send email to seller (SELLER_MAIL in settings.py) every Monday & Wednesday
+
+DOMAIN = localhost (local) 
+         44.236.75.64 (production)
+         
+I have manually deployed the project to EC2 to use it public.

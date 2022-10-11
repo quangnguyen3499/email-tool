@@ -3,9 +3,9 @@ from rest_framework.settings import api_settings
 from rest_framework.response import Response
 from rest_framework import exceptions
 
-from platform_backend.common.exceptions import ApplicationError
+from common.exceptions import ApplicationError
 
-from ..utils import get_first_matching_attr
+from .mixins import get_first_matching_attr
 
 
 def get_error_message(exc):

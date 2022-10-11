@@ -35,7 +35,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
-CSRF_COOKIE_SECURE = True
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Application definition
 

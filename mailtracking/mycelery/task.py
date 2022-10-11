@@ -17,9 +17,10 @@ def print_new_email_month():
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-
+    
     data = json.loads(session.get(settings.DOMAIN + "/api/v1/contacts/info/").content.decode("utf-8")["data"])
 
+    logger.info(data)
     t = threading.Thread(
             target=send_mail_statistic_service(
                 email=settings.SELLER_EMAIL,
