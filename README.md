@@ -12,6 +12,7 @@ Please follow this step for usage
 ### How to run:
 ```
 cd <project_path>/mailtracking
+import backup file database.bak
 create file local.env, copy content from local.env.example and modify it (including SELLER_MAIL)
 docker-compose up --build
 ```
