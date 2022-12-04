@@ -1,6 +1,4 @@
-## Candidate: Quang Nguyen
-
-Hello interviewer(s),
+## Owner: Quang Nguyen
 
 Please follow this step for usage
 
