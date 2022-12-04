@@ -28,6 +28,6 @@ docker-compose up --build
 - cron job console in terminal and send email to seller (SELLER_MAIL in settings.py) every Monday & Wednesday
 
 DOMAIN = localhost (local) 
-         44.236.75.64 (production)
+         ... (production) -> reopen in the future
          
 I have manually deployed the project to EC2 to use it public.
