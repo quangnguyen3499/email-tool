@@ -2,6 +2,10 @@
 
 Please follow this step for usage
 
+### Introduction
+This is a tool written in Python with Django used to collect email from customer for commercial purpose. There's a cron job run every Monday and Wednesday to send email statistics to shop owner.
+Please follow installation to set up and run this tool.
+
 ### Installation:
 
 - docker
