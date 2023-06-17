@@ -33,5 +33,3 @@ docker-compose up --build
 
 DOMAIN = localhost (local) 
          ... (production) -> reopen in the future
-         
-I have manually deployed the project to EC2 to use it public.
